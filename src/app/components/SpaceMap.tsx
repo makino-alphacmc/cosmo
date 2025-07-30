@@ -140,12 +140,18 @@ const SpaceMap: React.FC = () => {
 
 	// ピンクリック時の処理
 	const handlePinClick = (celestial: CelestialBody) => {
+		console.log("Pin clicked:", celestial.name);
 		setSelectedCelestial(celestial);
 		setIsModalOpen(true);
+		console.log("Modal state after click:", {
+			selectedCelestial: celestial,
+			isModalOpen: true,
+		});
 	};
 
 	// モーダルを閉じる処理
 	const handleCloseModal = () => {
+		console.log("Closing modal");
 		setIsModalOpen(false);
 		// アニメーション完了後に選択をクリア
 		setTimeout(() => {
@@ -231,6 +237,7 @@ const SpaceMap: React.FC = () => {
 			</div>
 
 			{/* モーダル */}
+			{console.log("Modal state:", { selectedCelestial, isModalOpen })}
 			<CelestialModal
 				celestial={selectedCelestial}
 				isOpen={isModalOpen}

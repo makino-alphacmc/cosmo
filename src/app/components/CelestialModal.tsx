@@ -14,7 +14,45 @@ const CelestialModal: React.FC<CelestialModalProps> = ({
 	isOpen,
 	onClose,
 }) => {
+	console.log("CelestialModal props:", { celestial, isOpen });
 	const [imageError, setImageError] = React.useState(false);
+
+	// 画像読み込みエラー時にリセット
+	React.useEffect(() => {
+		if (celestial) {
+			setImageError(false);
+		}
+	}, [celestial]);
+
+	// ESCキーでモーダルを閉じる
+	const handleEscKey = useCallback(
+		(e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				onClose();
+			}
+		},
+		[onClose]
+	);
+
+	useEffect(() => {
+		if (isOpen) {
+			document.addEventListener("keydown", handleEscKey);
+			// スクロールを無効化
+			document.body.style.overflow = "hidden";
+		}
+
+		return () => {
+			document.removeEventListener("keydown", handleEscKey);
+			document.body.style.overflow = "unset";
+		};
+	}, [isOpen, handleEscKey]);
+
+	if (!isOpen || !celestial) {
+		console.log("Modal not showing:", { isOpen, celestial });
+		return null;
+	}
+
+	console.log("Modal showing for:", celestial.name);
 
 	// モーダル内の天体スタイル
 	const getModalPlanetStyle = () => {
@@ -89,58 +127,70 @@ const CelestialModal: React.FC<CelestialModalProps> = ({
 		return null;
 	};
 
-	// ESCキーでモーダルを閉じる
-	const handleEscKey = useCallback(
-		(e: KeyboardEvent) => {
-			if (e.key === "Escape") {
-				onClose();
-			}
-		},
-		[onClose]
-	);
-
-	useEffect(() => {
-		if (isOpen) {
-			document.addEventListener("keydown", handleEscKey);
-			// スクロールを無効化
-			document.body.style.overflow = "hidden";
-		}
-
-		return () => {
-			document.removeEventListener("keydown", handleEscKey);
-			document.body.style.overflow = "unset";
-		};
-	}, [isOpen, handleEscKey]);
-
-	if (!isOpen || !celestial) return null;
-
-	// 画像読み込みエラー時にリセット
-	useEffect(() => {
-		setImageError(false);
-	}, [celestial]);
-
 	return (
 		<div
-			className="fixed inset-0 z-50 flex items-center justify-center p-4 
-        bg-black bg-opacity-80 backdrop-blur-sm animate-fadeIn"
+			style={{
+				position: "fixed",
+				top: 0,
+				left: 0,
+				right: 0,
+				bottom: 0,
+				zIndex: 50,
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				padding: "1rem",
+				background:
+					"linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(30,41,59,0.95) 100%)",
+				backdropFilter: "blur(20px)",
+			}}
 			onClick={onClose}
 			role="dialog"
 			aria-modal="true"
 			aria-labelledby="modal-title"
 		>
 			<div
-				className="relative bg-gradient-to-br from-gray-900/95 to-indigo-900/95 rounded-3xl 
-          max-w-2xl w-full max-h-[90vh] overflow-hidden
-          shadow-2xl transform transition-all duration-300 scale-100
-          border border-purple-500/20 backdrop-blur-xl"
+				style={{
+					position: "relative",
+					background:
+						"linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.95) 50%, rgba(51,65,85,0.95) 100%)",
+					borderRadius: "2rem",
+					maxWidth: "48rem",
+					width: "100%",
+					maxHeight: "85vh",
+					overflow: "hidden",
+					boxShadow:
+						"0 0 50px rgba(59,130,246,0.3), 0 25px 50px -12px rgba(0,0,0,0.5)",
+					border: "1px solid rgba(59,130,246,0.2)",
+					backdropFilter: "blur(30px)",
+					transform: "scale(1)",
+					transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+				}}
 				onClick={(e) => e.stopPropagation()}
 			>
 				{/* ヘッダー */}
-				<div className="relative p-6 pb-0">
+				<div
+					style={{
+						position: "relative",
+						padding: "2rem 2rem 1rem 2rem",
+						background:
+							"linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(147,51,234,0.1) 100%)",
+						borderBottom: "1px solid rgba(59,130,246,0.2)",
+					}}
+				>
 					<h2
 						id="modal-title"
-						className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text 
-              bg-gradient-to-r from-blue-300 to-purple-300 pr-10"
+						style={{
+							fontSize: "2.5rem",
+							fontWeight: "800",
+							background:
+								"linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%)",
+							backgroundClip: "text",
+							WebkitBackgroundClip: "text",
+							color: "transparent",
+							margin: 0,
+							textShadow: "0 0 30px rgba(96,165,250,0.5)",
+						}}
 					>
 						{celestial.name}
 					</h2>
@@ -148,20 +198,47 @@ const CelestialModal: React.FC<CelestialModalProps> = ({
 					{/* 閉じるボタン */}
 					<button
 						onClick={onClose}
-						className="absolute top-4 right-4 w-10 h-10 
-              flex items-center justify-center
-              text-gray-400 hover:text-white 
-              bg-gray-800 hover:bg-gray-700 
-              rounded-full transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+						style={{
+							position: "absolute",
+							top: "1.5rem",
+							right: "1.5rem",
+							width: "3rem",
+							height: "3rem",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							color: "#94a3b8",
+							background:
+								"linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(71,85,105,0.8) 100%)",
+							borderRadius: "50%",
+							border: "1px solid rgba(59,130,246,0.3)",
+							transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+							cursor: "pointer",
+							boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+						}}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.color = "#ffffff";
+							e.currentTarget.style.background =
+								"linear-gradient(135deg, rgba(59,130,246,0.8) 0%, rgba(147,51,234,0.8) 100%)";
+							e.currentTarget.style.transform = "scale(1.1)";
+							e.currentTarget.style.boxShadow =
+								"0 8px 25px rgba(59,130,246,0.4)";
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.color = "#94a3b8";
+							e.currentTarget.style.background =
+								"linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(71,85,105,0.8) 100%)";
+							e.currentTarget.style.transform = "scale(1)";
+							e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.2)";
+						}}
 						aria-label="モーダルを閉じる"
 					>
 						<svg
-							className="w-6 h-6"
+							style={{ width: "1.25rem", height: "1.25rem" }}
 							fill="none"
 							strokeLinecap="round"
 							strokeLinejoin="round"
-							strokeWidth="2"
+							strokeWidth="2.5"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
 						>
@@ -171,28 +248,86 @@ const CelestialModal: React.FC<CelestialModalProps> = ({
 				</div>
 
 				{/* コンテンツ */}
-				<div className="p-6 space-y-6 max-h-[calc(90vh-100px)] overflow-y-auto custom-scrollbar">
+				<div
+					style={{
+						padding: "2rem",
+						display: "flex",
+						flexDirection: "column",
+						gap: "1.5rem",
+						maxHeight: "calc(85vh - 120px)",
+						overflowY: "auto",
+					}}
+				>
 					{/* 画像 */}
 					<div
-						className="relative w-full h-48 md:h-64 bg-gradient-to-br from-gray-800/50 to-indigo-800/50 rounded-2xl overflow-hidden backdrop-blur-sm"
 						style={{
-							boxShadow: "inset 0 0 30px rgba(139, 92, 246, 0.3)",
+							position: "relative",
+							width: "100%",
+							height: "16rem",
+							background:
+								"linear-gradient(135deg, rgba(51,65,85,0.5) 0%, rgba(71,85,105,0.5) 100%)",
+							borderRadius: "1.5rem",
+							overflow: "hidden",
+							backdropFilter: "blur(10px)",
+							boxShadow: "inset 0 0 30px rgba(59,130,246,0.3)",
+							border: "1px solid rgba(59,130,246,0.2)",
 						}}
 					>
 						{!imageError ? (
-							<div className="relative w-full h-full flex items-center justify-center p-8">
+							<div
+								style={{
+									position: "relative",
+									width: "100%",
+									height: "100%",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									padding: "2rem",
+								}}
+							>
 								{/* 天体の3D風表現 */}
-								<div className="relative w-32 h-32 md:w-48 md:h-48">
+								<div
+									style={{
+										position: "relative",
+										width: "12rem",
+										height: "12rem",
+									}}
+								>
 									<div
 										className={`absolute inset-0 rounded-full ${getModalPlanetStyle()}`}
 									/>
 									{getSurfaceDetails()}
-									<div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/30 to-transparent" />
-									<div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent to-black/40" />
+									<div
+										style={{
+											position: "absolute",
+											inset: 0,
+											borderRadius: "50%",
+											background:
+												"linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%)",
+										}}
+									/>
+									<div
+										style={{
+											position: "absolute",
+											inset: 0,
+											borderRadius: "50%",
+											background:
+												"linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.4) 100%)",
+										}}
+									/>
 								</div>
 							</div>
 						) : (
-							<div className="w-full h-full flex items-center justify-center text-6xl">
+							<div
+								style={{
+									width: "100%",
+									height: "100%",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									fontSize: "4rem",
+								}}
+							>
 								{celestial.type === "star"
 									? "⭐"
 									: celestial.type === "satellite"
@@ -203,14 +338,20 @@ const CelestialModal: React.FC<CelestialModalProps> = ({
 					</div>
 
 					{/* タイプバッジ */}
-					<div className="flex items-center space-x-2">
+					<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
 						<span
-							className="inline-block px-4 py-2 
-              bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-300 
-              text-sm font-medium rounded-full border border-purple-500/30 
-              backdrop-blur-sm shadow-lg"
 							style={{
-								boxShadow: "0 0 20px rgba(139, 92, 246, 0.3)",
+								display: "inline-block",
+								padding: "0.5rem 1rem",
+								background:
+									"linear-gradient(135deg, rgba(147,51,234,0.2) 0%, rgba(59,130,246,0.2) 100%)",
+								color: "#a78bfa",
+								fontSize: "0.875rem",
+								fontWeight: "600",
+								borderRadius: "9999px",
+								border: "1px solid rgba(147,51,234,0.3)",
+								backdropFilter: "blur(10px)",
+								boxShadow: "0 0 20px rgba(147,51,234,0.3)",
 							}}
 						>
 							{celestial.type === "star"
@@ -224,15 +365,36 @@ const CelestialModal: React.FC<CelestialModalProps> = ({
 					</div>
 
 					{/* 説明文 */}
-					<div className="space-y-4">
-						<p className="text-gray-300 leading-relaxed text-lg">
+					<div
+						style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+					>
+						<p
+							style={{
+								color: "#d1d5db",
+								lineHeight: "1.75",
+								fontSize: "1.125rem",
+								margin: 0,
+							}}
+						>
 							{celestial.description}
 						</p>
 					</div>
 
 					{/* 追加情報（将来の拡張用） */}
-					<div className="pt-4 border-t border-gray-700">
-						<p className="text-sm text-gray-500">
+					<div
+						style={{
+							paddingTop: "1rem",
+							borderTop: "1px solid rgba(59,130,246,0.2)",
+						}}
+					>
+						<p
+							style={{
+								fontSize: "0.875rem",
+								color: "#6b7280",
+								margin: 0,
+								fontStyle: "italic",
+							}}
+						>
 							※ より詳しい情報は今後追加予定です
 						</p>
 					</div>

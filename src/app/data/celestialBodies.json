@@ -1,0 +1,82 @@
+[
+	{
+		"id": "sun",
+		"name": "太陽",
+		"type": "star",
+		"position": { "top": "50%", "left": "10%" },
+		"image": "/planets/sun.png",
+		"description": "太陽系の中心にある恒星。地球上のすべての生命のエネルギー源。表面温度は約5,500℃。"
+	},
+	{
+		"id": "mercury",
+		"name": "水星",
+		"type": "planet",
+		"position": { "top": "48%", "left": "20%" },
+		"image": "/planets/mercury.png",
+		"description": "太陽に最も近い惑星。昼は430℃、夜は-180℃という極端な温度差がある。"
+	},
+	{
+		"id": "venus",
+		"name": "金星",
+		"type": "planet",
+		"position": { "top": "55%", "left": "28%" },
+		"image": "/planets/venus.png",
+		"description": "地球に最も近い惑星。厚い大気による温室効果で表面温度は460℃に達する。"
+	},
+	{
+		"id": "earth",
+		"name": "地球",
+		"type": "planet",
+		"position": { "top": "50%", "left": "40%" },
+		"image": "/planets/earth.png",
+		"description": "私たちの住む青い惑星。液体の水と酸素を含む大気を持つ、生命が確認されている唯一の天体。"
+	},
+	{
+		"id": "moon",
+		"name": "月",
+		"type": "satellite",
+		"position": { "top": "45%", "left": "44%" },
+		"image": "/planets/moon.png",
+		"description": "地球の唯一の衛星。潮の満ち引きに影響を与え、地球の自転を安定させている。"
+	},
+	{
+		"id": "mars",
+		"name": "火星",
+		"type": "planet",
+		"position": { "top": "52%", "left": "55%" },
+		"image": "/planets/mars.png",
+		"description": "赤い惑星と呼ばれる。かつて水が存在した証拠があり、将来の有人探査の候補地。"
+	},
+	{
+		"id": "jupiter",
+		"name": "木星",
+		"type": "planet",
+		"position": { "top": "50%", "left": "70%" },
+		"image": "/planets/jupiter.png",
+		"description": "太陽系最大の惑星。大赤斑と呼ばれる巨大な嵐が300年以上続いている。"
+	},
+	{
+		"id": "saturn",
+		"name": "土星",
+		"type": "planet",
+		"position": { "top": "48%", "left": "82%" },
+		"image": "/planets/saturn.png",
+		"description": "美しい環を持つ惑星。環は主に氷の粒子でできており、厚さは数十メートル程度。"
+	},
+	{
+		"id": "uranus",
+		"name": "天王星",
+		"type": "planet",
+		"position": { "top": "30%", "left": "88%" },
+		"image": "/planets/uranus.png",
+		"description": "横倒しに自転する氷の巨大惑星。メタンを含む大気により青緑色に見える。"
+	},
+	{
+		"id": "neptune",
+		"name": "海王星",
+		"type": "planet",
+		"position": { "top": "70%", "left": "90%" },
+		"image": "/planets/neptune.png",
+		"description": "太陽系最外縁の惑星。風速は時速2,100kmに達し、太陽系で最も強い。"
+	}
+]

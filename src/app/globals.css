@@ -1,26 +1,121 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* テスト用の明示的なスタイル */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+	background-color: #000000 !important;
+	color: #ffffff !important;
+}
+
+@layer base {
+	html {
+		@apply scroll-smooth;
+	}
+
+	body {
+		@apply overflow-x-hidden;
+	}
+}
+
+@layer components {
+	/* カスタムスクロールバー */
+	.custom-scrollbar::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.custom-scrollbar::-webkit-scrollbar-track {
+		@apply bg-gray-900;
+	}
+
+	.custom-scrollbar::-webkit-scrollbar-thumb {
+		@apply bg-gray-600 rounded-full;
+	}
+
+	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+		@apply bg-gray-500;
+	}
+
+	/* 星空アニメーション */
+	.stars {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.star {
+		position: absolute;
+		width: 2px;
+		height: 2px;
+		background: white;
+		border-radius: 50%;
+		animation: twinkle 3s infinite;
+	}
+
+	@keyframes twinkle {
+		0%,
+		100% {
+			opacity: 0;
+		}
+		50% {
+			opacity: 1;
+		}
+	}
+
+	/* カスタムアニメーション */
+	@keyframes shooting-star {
+		0% {
+			transform: translateX(-100px) translateY(0);
+			opacity: 0;
+		}
+		20% {
+			opacity: 1;
+		}
+		80% {
+			opacity: 1;
+		}
+		100% {
+			transform: translateX(500px) translateY(100px);
+			opacity: 0;
+		}
+	}
+
+	@keyframes float-delayed {
+		0%,
+		100% {
+			transform: translateY(0px) scale(1);
+		}
+		50% {
+			transform: translateY(-30px) scale(1.1);
+		}
+	}
+
+	@keyframes float-slow {
+		0%,
+		100% {
+			transform: translateY(0px) translateX(0px);
+		}
+		33% {
+			transform: translateY(-20px) translateX(20px);
+		}
+		66% {
+			transform: translateY(-10px) translateX(-10px);
+		}
+	}
+
+	.animate-shooting-star {
+		animation: shooting-star 4s linear infinite;
+	}
+
+	.animate-float-delayed {
+		animation: float-delayed 6s ease-in-out infinite;
+		animation-delay: 2s;
+	}
+
+	.animate-float-slow {
+		animation: float-slow 8s ease-in-out infinite;
+	}
 }

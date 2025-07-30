@@ -14,7 +14,7 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 import { extend } from "@react-three/fiber";
-import { CelestialBody } from "@/types";
+import { CelestialBody } from "../types";
 
 // 高品質テクスチャURL（複数のソースから選択可能）
 const HD_TEXTURE_URLS = {

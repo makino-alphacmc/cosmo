@@ -48,7 +48,7 @@ const MapPin: React.FC<MapPinProps> = ({ celestial, onClick }) => {
 			}}
 		>
 			<button
-				className={`w-full h-full ${getPlanetColor()} rounded-full border-4 border-white 
+				className={`w-full h-full ${getPlanetColor()} rounded-full border-4 border-white
           hover:scale-110 transition-all duration-200 cursor-pointer
           flex items-center justify-center text-white text-xs font-bold shadow-lg
           hover:shadow-xl`}

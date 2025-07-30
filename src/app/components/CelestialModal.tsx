@@ -48,8 +48,13 @@ const CelestialModal: React.FC<CelestialModalProps> = ({
 	}, [isOpen, handleEscKey]);
 
 	// より厳密な条件チェック
-	if (!isOpen || !celestial) {
-		console.log("Modal not showing:", { isOpen, celestial: celestial?.name });
+	if (!isOpen) {
+		console.log("Modal not showing - isOpen is false");
+		return null;
+	}
+
+	if (!celestial) {
+		console.log("Modal not showing - celestial is null");
 		return null;
 	}
 

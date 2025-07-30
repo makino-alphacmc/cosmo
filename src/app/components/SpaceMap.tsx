@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-// import MapPin from "./MapPin";
-// import MapPin3D from "./MapPin3D";
+// import MapPin from './MapPin'
+// import MapPin3D from './MapPin3D'
 // import MapPinRealistic from "./MapPinRealistic";
 import { CelestialBody } from "../types";
 import celestialBodiesData from "../data/celestialBodies.json";
@@ -26,7 +26,7 @@ const SpaceMap: React.FC = () => {
 	const [celestialBodies, setCelestialBodies] = useState<CelestialBody[]>([]);
 	const [selectedCelestial, setSelectedCelestial] =
 		useState<CelestialBody | null>(null);
-	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
 	// 天体データの読み込み
@@ -42,7 +42,6 @@ const SpaceMap: React.FC = () => {
 
 	// ピンクリック時の処理
 	const handlePinClick = (celestial: CelestialBody) => {
-		console.log("Pin clicked:", celestial.name);
 		setSelectedCelestial(celestial);
 		setIsModalOpen(true);
 	};
@@ -56,17 +55,13 @@ const SpaceMap: React.FC = () => {
 		}, 300);
 	};
 
-	// デバッグ用：モーダル状態をログ出力
-	console.log("Modal state:", {
-		isModalOpen,
-		selectedCelestial: selectedCelestial?.name,
-	});
-
-	// 初期化時にモーダルを確実に閉じる
+	// デバッグ用：モーダル状態の変更を監視
 	useEffect(() => {
-		setIsModalOpen(false);
-		setSelectedCelestial(null);
-	}, []);
+		console.log("Modal state changed:", {
+			isModalOpen,
+			selectedCelestial: selectedCelestial?.name,
+		});
+	}, [isModalOpen, selectedCelestial]);
 
 	if (isLoading) {
 		return (
@@ -95,36 +90,78 @@ const SpaceMap: React.FC = () => {
 
 			{/* 星空エフェクト */}
 			<div className="absolute inset-0">
-				{/* 大きな星 */}
-				{[...Array(50)].map((_, i) => (
-					<div
-						key={`star-large-${i}`}
-						className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
-						style={{
-							top: `${Math.random() * 100}%`,
-							left: `${Math.random() * 100}%`,
-							animationDelay: `${Math.random() * 5}s`,
-							animationDuration: `${3 + Math.random() * 4}s`,
-							opacity: 0.6 + Math.random() * 0.4,
-						}}
-					/>
-				))}
+				{/* 大きな星（煌めく）- 画面全体に均等分布 */}
+				{[...Array(150)].map((_, i) => {
+					const row = Math.floor(i / 15); // 10行
+					const col = i % 15; // 15列
+					const baseTop = row * 10 + Math.random() * 8; // 各行の範囲内でランダム
+					const baseLeft = col * 6.67 + Math.random() * 4; // 各列の範囲内でランダム
 
-				{/* 小さな星 */}
-				{[...Array(200)].map((_, i) => (
+					return (
+						<div
+							key={`star-large-${i}`}
+							className="absolute bg-white rounded-full animate-twinkle"
+							style={{
+								width: `${2 + Math.random() * 3}px`,
+								height: `${2 + Math.random() * 3}px`,
+								top: `${baseTop}%`,
+								left: `${baseLeft}%`,
+								animationDelay: `${Math.random() * 5}s`,
+								animationDuration: `${2 + Math.random() * 3}s`,
+								opacity: 0.4 + Math.random() * 0.6,
+								boxShadow: `0 0 ${
+									4 + Math.random() * 6
+								}px rgba(255, 255, 255, ${0.5 + Math.random() * 0.5})`,
+							}}
+						/>
+					);
+				})}
+
+				{/* 中程度の星 - より細かいグリッド */}
+				{[...Array(400)].map((_, i) => {
+					const row = Math.floor(i / 20); // 20行
+					const col = i % 20; // 20列
+					const baseTop = row * 5 + Math.random() * 3; // 各行の範囲内でランダム
+					const baseLeft = col * 5 + Math.random() * 3; // 各列の範囲内でランダム
+
+					return (
+						<div
+							key={`star-medium-${i}`}
+							className="absolute bg-white rounded-full animate-twinkle"
+							style={{
+								width: `${1 + Math.random() * 2}px`,
+								height: `${1 + Math.random() * 2}px`,
+								top: `${baseTop}%`,
+								left: `${baseLeft}%`,
+								animationDelay: `${Math.random() * 4}s`,
+								animationDuration: `${1.5 + Math.random() * 2.5}s`,
+								opacity: 0.3 + Math.random() * 0.5,
+							}}
+						/>
+					);
+				})}
+
+				{/* 小さな星 - ランダム分布で密度を上げる */}
+				{[...Array(800)].map((_, i) => (
 					<div
 						key={`star-small-${i}`}
-						className="absolute w-px h-px bg-white rounded-full"
+						className="absolute bg-white rounded-full"
 						style={{
+							width: "1px",
+							height: "1px",
 							top: `${Math.random() * 100}%`,
 							left: `${Math.random() * 100}%`,
-							opacity: 0.3 + Math.random() * 0.7,
+							opacity: 0.1 + Math.random() * 0.3,
 						}}
 					/>
 				))}
 
-				{/* 流れ星エフェクト */}
-				<div className="absolute top-10 right-20 w-32 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-60 animate-shooting-star" />
+				{/* 流れ星エフェクト（複数）- 画面全体に分散 */}
+				<div className="absolute top-5 right-10 w-32 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-60 animate-shooting-star" />
+				<div className="absolute top-15 left-5 w-24 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-40 animate-shooting-star-delayed" />
+				<div className="absolute bottom-15 right-5 w-28 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shooting-star-slow" />
+				<div className="absolute top-30 left-20 w-20 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-shooting-star" />
+				<div className="absolute bottom-5 left-15 w-26 h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-45 animate-shooting-star-delayed" />
 			</div>
 
 			{/* 星雲エフェクト */}
@@ -187,6 +224,17 @@ const SpaceMap: React.FC = () => {
 
 // カスタムアニメーション用のCSS
 const styles = `
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+  
   @keyframes shooting-star {
     0% {
       transform: translateX(-100px) translateY(0);
@@ -200,6 +248,40 @@ const styles = `
     }
     100% {
       transform: translateX(500px) translateY(100px);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes shooting-star-delayed {
+    0% {
+      transform: translateX(-80px) translateY(0);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(400px) translateY(80px);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes shooting-star-slow {
+    0% {
+      transform: translateX(-120px) translateY(0);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(600px) translateY(120px);
       opacity: 0;
     }
   }
@@ -225,8 +307,22 @@ const styles = `
     }
   }
   
+  .animate-twinkle {
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  
   .animate-shooting-star {
     animation: shooting-star 8s ease-in-out infinite;
+  }
+  
+  .animate-shooting-star-delayed {
+    animation: shooting-star-delayed 12s ease-in-out infinite;
+    animation-delay: 4s;
+  }
+  
+  .animate-shooting-star-slow {
+    animation: shooting-star-slow 15s ease-in-out infinite;
+    animation-delay: 8s;
   }
   
   .animate-float-delayed {

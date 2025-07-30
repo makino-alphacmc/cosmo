@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import MapPin from "./MapPin";
 import { CelestialBody } from "../types";
 import celestialBodiesData from "../data/celestialBodies.json";
 
@@ -11,6 +10,79 @@ const CelestialModal = dynamic(() => import("./CelestialModal"), {
 	loading: () => <div className="fixed inset-0 bg-black bg-opacity-50" />,
 	ssr: false,
 });
+
+// MapPinコンポーネントをインラインで定義
+const MapPin: React.FC<{
+	celestial: CelestialBody;
+	onClick: (celestial: CelestialBody) => void;
+}> = ({ celestial, onClick }) => {
+	console.log("MapPin rendering:", celestial.name, celestial.position);
+
+	// 天体タイプに応じた色を決定
+	const getPlanetColor = () => {
+		switch (celestial.id) {
+			case "sun":
+				return "#f59e0b"; // yellow-500
+			case "mercury":
+				return "#6b7280"; // gray-500
+			case "venus":
+				return "#fde047"; // yellow-300
+			case "earth":
+				return "#3b82f6"; // blue-500
+			case "moon":
+				return "#d1d5db"; // gray-300
+			case "mars":
+				return "#ef4444"; // red-500
+			case "jupiter":
+				return "#f97316"; // orange-500
+			case "saturn":
+				return "#facc15"; // yellow-400
+			case "uranus":
+				return "#22d3ee"; // cyan-400
+			case "neptune":
+				return "#2563eb"; // blue-600
+			default:
+				return "#3b82f6"; // blue-500
+		}
+	};
+
+	return (
+		<div
+			style={{
+				position: "absolute",
+				width: "96px",
+				height: "96px",
+				top: celestial.position.top,
+				left: celestial.position.left,
+				transform: "translate(-50%, -50%)",
+				zIndex: 20,
+			}}
+		>
+			<button
+				style={{
+					width: "100%",
+					height: "100%",
+					backgroundColor: getPlanetColor(),
+					borderRadius: "50%",
+					border: "4px solid white",
+					cursor: "pointer",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					color: "white",
+					fontSize: "12px",
+					fontWeight: "bold",
+					boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+					transition: "all 0.2s ease",
+				}}
+				onClick={() => onClick(celestial)}
+				aria-label={`${celestial.name}の詳細を表示`}
+			>
+				{celestial.name}
+			</button>
+		</div>
+	);
+};
 
 const SpaceMap: React.FC = () => {
 	const [celestialBodies, setCelestialBodies] = useState<CelestialBody[]>([]);
@@ -25,6 +97,7 @@ const SpaceMap: React.FC = () => {
 	// 天体データの読み込み
 	useEffect(() => {
 		try {
+			console.log("Loading celestial data:", celestialBodiesData);
 			setCelestialBodies(celestialBodiesData as CelestialBody[]);
 			setIsLoading(false);
 		} catch (error) {
@@ -92,14 +165,8 @@ const SpaceMap: React.FC = () => {
 
 	return (
 		<div className="relative w-full h-screen overflow-hidden bg-black">
-			{/* 背景画像 */}
-			<div
-				className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-				style={{
-					backgroundImage: "url(/space-bg.jpg)",
-					filter: "brightness(0.7)",
-				}}
-			/>
+			{/* 背景のグラデーション */}
+			<div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-black to-indigo-950" />
 
 			{/* アニメーション背景の星 */}
 			<div className="stars">
@@ -122,14 +189,45 @@ const SpaceMap: React.FC = () => {
 			</header>
 
 			{/* 天体マップエリア */}
-			<div className="relative w-full h-full">
-				{celestialBodies.map((celestial) => (
-					<MapPin
-						key={celestial.id}
-						celestial={celestial}
-						onClick={handlePinClick}
-					/>
-				))}
+			<div className="relative w-full h-full bg-transparent">
+				{/* デバッグ情報 */}
+				<div className="absolute top-0 left-0 bg-red-500 text-white p-2 text-xs z-50">
+					天体数: {celestialBodies.length}
+				</div>
+
+				{/* テスト用の固定ボタン */}
+				<div
+					style={{
+						position: "absolute",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+						width: "128px",
+						height: "128px",
+						backgroundColor: "#ef4444",
+						borderRadius: "50%",
+						border: "4px solid white",
+						zIndex: 30,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						color: "white",
+						fontWeight: "bold",
+					}}
+				>
+					テスト
+				</div>
+
+				{celestialBodies.map((celestial) => {
+					console.log("Rendering MapPin for:", celestial.name);
+					return (
+						<MapPin
+							key={celestial.id}
+							celestial={celestial}
+							onClick={handlePinClick}
+						/>
+					);
+				})}
 			</div>
 
 			{/* モーダル */}
